@@ -193,11 +193,5 @@ The project includes two levels of UQ:
 - Evensen (2003) — *The Ensemble Kalman Filter: theoretical formulation and practical implementation* — Ocean Dynamics
 - Hesthaven, Rozza & Stamm (2016) — *Certified Reduced Basis Methods for Parametrized Partial Differential Equations* — Springer
 
----
 
-## Author
-
-**Anish Hilary Ignatius**  
-M.Sc. Systems Engineering and Engineering Management  
-Research Assistant, Institute of System Dynamics (ISD), University of Stuttgart  
 

@@ -1,0 +1,47 @@
+version: "3.9"
+
+# ── Shared data volume ─────────────────────────────────────────────────────
+# Both containers mount /workspace/data
+# Simulation writes snapshots -> ML container reads them
+
+volumes:
+  thermo_data:
+    driver: local
+
+services:
+
+  # ── Container 1: FEniCSx simulation ─────────────────────────────────────
+  simulation:
+    build:
+      context: ./simulation
+      dockerfile: Dockerfile
+    image: thermo-simulation:latest
+    container_name: thermo_simulation
+    volumes:
+      - thermo_data:/workspace/data
+      - ./simulation:/workspace
+    command: python3 run_parametric.py
+    # Run once to generate snapshots then exits cleanly
+    # Re-run with:  docker-compose run simulation
+
+  # ── Container 2: Data-driven pipeline + Streamlit dashboard ──────────────────────
+  data_driven:
+    build:
+      context: ./data_driven
+      dockerfile: Dockerfile
+    image: thermo-data-driven:latest
+    container_name: thermo_data_driven
+    volumes:
+      - thermo_data:/workspace/data
+      - ./data_driven:/workspace
+    ports:
+      - "8501:8501"
+    # First run train_rom.py, then dashboard launches automatically
+    command: >
+      sh -c "python3 train_rom.py && streamlit run dashboard.py
+             --server.port=8501
+             --server.address=0.0.0.0
+             --server.headless=true"
+    depends_on:
+      simulation:
+        condition: service_completed_successfully

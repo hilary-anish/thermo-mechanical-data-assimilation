@@ -1,0 +1,5 @@
+numpy>=1.24
+scipy
+matplotlib
+streamlit>=1.28
+plotly>=5.15
